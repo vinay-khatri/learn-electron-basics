@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../index.css">
+    <title>Download Item</title>
+</head>
+<body>
+    <button id='download-image'>Download Image</button>
+    <progress value="0" max="100" id='progress-bar'></progress>
+
+    <script>
+        const { remote } = require('electron')
+        const app = remote.app
+        const win = remote.getCurrentWindow()
+        const wc = win.webContents
+        const session = win.webContents.session
+        let progressbar = document.querySelector('#progress-bar')
+
+        document.querySelector('#download-image').addEventListener('click', e => {
+            // lets start download from url using webContents method
+            // this will emit 'will-download' event on session
+            wc.downloadURL("https://picsum.photos/5000/5000/")
+        })
+
+        // we can listen for 'will-download' event on session that emits before download starts
+        // we can prevent download or do many other things with it like showing file size, progress bar, etc
+        session.on('will-download', (event, downloadItem, webContents) => {
+            // get file name
+            let fileName = downloadItem.getFilename()
+            // downloadItem.setSavePath(app.getPath('desktop') + `/${fileName}`)
+
+            // get file size
+            // if download size is unknown it will return 0
+            let fileSize = downloadItem.getTotalBytes()
+
+            // updated event emits when download is not complete and state progressing or interupted
+            downloadItem.on('updated', (e, state) => {
+                let recieved = downloadItem.getReceivedBytes()
+                if (state === 'progressing' && fileSize && recieved) {
+                    let progress = Math.round((recieved/fileSize)*100)
+                    progressbar.value = progress
+                }
+            })
+            // done event is emitted when download is complete, cancelled or interrupted
+            downloadItem.on('done', (e, state) => {
+                if (state ===  'completed') {
+                    progressbar.value=100
+                } else if (state === 'cancelled') {
+                    console.log('download cancelled')
+                }
+            })
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electron App</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <h3>Basics of Electron</h3>
+    <br>
+    <h3>BrowserWindow</h3>
+    <h5>create and control browser windows</h5>
+    <button id="new-window">New Window</button>
+    <button id="child-window">Child Window</button>
+    <button id="web-window">Web Window</button>
+    <br><br>
+    <h3>webContents</h3>
+    <h5>render and control web pages</h5>
+    <button id="web-events">Web Events</button>
+    <br><br>
+    <h3>session</h3>
+    <h5>manage browser sessions, cookies, cache, proxy settings, etc.</h5>
+    <button id="default-session">Default Session</button>
+    <button id="custom-session">Custom Session</button>
+    <button id="download-item">Download Item</button>
+    
+    <script>
+        // we could also use src attribute on script tag instead of require to link basics.js
+        // as we have set nodeIntegration to true, we can use require method here for importing modules.
+        require('./basics.js')
+    </script>
+</body>
+</html>
